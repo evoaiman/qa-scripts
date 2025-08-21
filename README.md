@@ -94,7 +94,7 @@ TEST_USER_PASSWORD=prodpass123
 Organize your tests by project:
 
 ```
-tests/
+cypress/
 ├── project-1/
 │   ├── cypress.config.js
 │   └── e2e/

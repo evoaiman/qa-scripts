@@ -53,8 +53,8 @@ npm install
 
 3. Create a test project:
 ```bash
-mkdir tests/my-project
-cd tests/my-project
+mkdir cypress/my-project
+cd cypress/my-project
 # Add your test files
 ```
 
@@ -69,7 +69,7 @@ npm test
 qa-scripts/
 ├── bin/           # CLI executables
 ├── lib/           # Core library code
-├── tests/         # Test suites for different projects
+├── cypress/       # Test suites for different projects
 ├── shared/        # Shared test utilities
 ├── configs/       # Configuration files
 └── hooks/         # Git hooks
