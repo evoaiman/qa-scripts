@@ -1,10 +1,10 @@
 {
-  "name": "@am-bateriku/qa-scripts",
+  "name": "@evoaiman/qa-scripts",
   "version": "1.0.0",
   "description": "Centralized QA test scripts for Bateriku projects",
   "main": "index.js",
   "bin": {
-    "qa-test": "./bin/qa-test"
+    "qa-test": "bin/qa-test"
   },
   "scripts": {
     "postinstall": "node hooks/install.js",
@@ -15,7 +15,15 @@
     "test:b2b-web": "cypress run --config-file tests/b2b-web/cypress.config.js",
     "test:b2c-web": "cypress run --config-file tests/b2c-web/cypress.config.js",
     "test:motor-maniac": "cypress run --config-file tests/motor-maniac/cypress.config.js",
-    "publish-package": "npm publish --registry=https://npm.pkg.github.com"
+    "publish-package": "npm publish --registry=https://npm.pkg.github.com",
+    "qa:test": "qa-test",
+    "qa:test:local": "qa-test --env local",
+    "qa:test:staging": "qa-test --env staging",
+    "qa:test:production": "qa-test --env production",
+    "qa:test:headed": "qa-test --headed",
+    "qa:test:debug": "qa-test --headed --debug",
+    "qa:update": "npm update @am-bateriku/qa-scripts",
+    "qa:update:latest": "npm install @am-bateriku/qa-scripts@latest"
   },
   "dependencies": {
     "cypress": "^14.5.4",
@@ -49,7 +57,7 @@
   "license": "PRIVATE",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bateriku/qa-scripts.git"
+    "url": "git+https://github.com/bateriku/qa-scripts.git"
   },
   "engines": {
     "node": ">=18.0.0",
