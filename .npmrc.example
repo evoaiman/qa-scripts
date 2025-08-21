@@ -1,2 +1,15 @@
-@evoaiman:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+# Example npm configuration
+# Copy this to .npmrc and update with your settings
+
+# For private registries (optional)
+# @your-scope:registry=https://your-registry.com
+# //your-registry.com/:_authToken=${NPM_TOKEN}
+
+# Default registry (usually not needed, npm uses npmjs.com by default)
+# registry=https://registry.npmjs.org/
+
+# Optional: Save exact versions
+save-exact=true
+
+# Optional: Use lockfile version 2
+lockfile-version=2

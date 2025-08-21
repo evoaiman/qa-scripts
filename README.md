@@ -1,282 +1,239 @@
-# 🧪 @am-bateriku/qa-scripts
+# qa-scripts
 
-Centralized QA testing package for all Bateriku projects. Write once, test everywhere!
+[![npm version](https://img.shields.io/npm/v/qa-scripts.svg)](https://www.npmjs.com/package/qa-scripts)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://img.shields.io/npm/dm/qa-scripts.svg)](https://www.npmjs.com/package/qa-scripts)
 
-## 🎯 Purpose
+A centralized QA test automation framework for web applications using Cypress. Write once, test everywhere!
 
-This package centralizes all E2E tests for Bateriku projects, allowing:
-- **QA/Testers** to write and maintain tests in one place
-- **Developers** to run the same tests locally before committing
-- **CI/CD** to automatically run tests during deployments
-- **Consistency** across local, staging, and production environments
+## Features
 
-## 🚀 Quick Start
+- 🚀 **Centralized Testing** - Maintain all E2E tests in one package
+- 🔄 **Auto-detection** - Automatically detects which project you're testing
+- 🌍 **Environment Support** - Built-in support for local, staging, and production environments  
+- 🎯 **Git Hooks** - Automatic pre-commit hooks to run tests before code commits
+- 📊 **Test Reports** - Comprehensive test reports with screenshots and videos
+- 🛠️ **CLI Tool** - Powerful command-line interface for running tests
+- 🎨 **Customizable** - Easily extend with custom commands and configurations
 
-### For Developers (Using the package in your project)
+## Installation
 
-1. **Install the package:**
 ```bash
-npm install --save-dev @am-bateriku/qa-scripts
+npm install --save-dev qa-scripts
 ```
 
-2. **Run the post-install setup (automatic):**
-The package automatically sets up git hooks and npm scripts after installation.
+Or install globally:
 
-3. **Run tests:**
 ```bash
-# Run tests for your project (auto-detected)
-npm run qa:test
+npm install -g qa-scripts
+```
 
-# Run with specific environment
-npm run qa:test:local
-npm run qa:test:staging
+## Quick Start
 
-# Run in headed mode (see browser)
-npm run qa:test:headed
+### Basic Usage
+
+```bash
+# Run tests for auto-detected project
+qa-test
+
+# Run tests for specific project
+qa-test --project myapp
+
+# Run tests in specific environment
+qa-test --env staging
+
+# Run tests in headed mode (see browser)
+qa-test --headed
 
 # Debug mode
-npm run qa:test:debug
+qa-test --headed --debug
 ```
 
-### For QA/Testers (Maintaining tests)
+### NPM Scripts
 
-1. **Clone this repository:**
-```bash
-git clone https://github.com/bateriku/qa-scripts.git
-cd qa-scripts
-npm install
+Add these scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "test:e2e": "qa-test",
+    "test:e2e:staging": "qa-test --env staging",
+    "test:e2e:headed": "qa-test --headed"
+  }
+}
 ```
 
-2. **Write/update tests in the appropriate project folder:**
-```
-tests/
-├── astra/
-│   └── e2e/
-│       ├── pages.cy.js
-│       ├── forms.cy.js
-│       └── purchase.cy.js
-├── amaron/
-├── akademi/
-└── ...
-```
-
-3. **Test your changes:**
-```bash
-# Test specific project
-npm run test:astra
-
-# Test with staging environment
-ENV=staging npm run test:astra
-```
-
-4. **Publish new version:**
-```bash
-npm version patch  # or minor/major
-npm publish
-git push --tags
-```
-
-## 📦 Installation & Setup
-
-### Prerequisites
-
-- Node.js 18+ and npm 9+
-- Git (for hooks)
-- Chrome/Firefox/Edge browser
-
-### Setting up NPM Registry (GitHub Packages)
-
-1. **Create a Personal Access Token:**
-   - Go to GitHub Settings → Developer settings → Personal access tokens
-   - Create a token with `write:packages` and `read:packages` scopes
-
-2. **Configure npm:**
-```bash
-npm login --registry=https://npm.pkg.github.com
-# Username: YOUR_GITHUB_USERNAME
-# Password: YOUR_PERSONAL_ACCESS_TOKEN
-# Email: YOUR_EMAIL
-```
-
-3. **Add to your project's `.npmrc`:**
-```
-@am-bateriku:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
-```
-
-4. **Set environment variable:**
-```bash
-export NPM_TOKEN=your_token_here
-```
-
-## 🔧 Configuration
+## Configuration
 
 ### Environment Files
 
-Create environment-specific files:
-- `.env.local` - Local development
-- `.env.staging` - Staging environment
-- `.env.production` - Production environment
+Create environment-specific `.env` files in your project root:
 
-Example `.env.local`:
-```env
+```bash
+# .env.local
 BASE_URL=http://localhost:3000
-ASTRA_URL=http://localhost:3001
+API_URL=http://localhost:3001/api
 TEST_USER_EMAIL=test@example.com
 TEST_USER_PASSWORD=testpass123
-BROWSER=chrome
-HEADLESS=false
+
+# .env.staging
+BASE_URL=https://staging.example.com
+API_URL=https://api-staging.example.com
+TEST_USER_EMAIL=staging@example.com
+TEST_USER_PASSWORD=stagingpass123
+
+# .env.production
+BASE_URL=https://example.com
+API_URL=https://api.example.com
+TEST_USER_EMAIL=prod@example.com
+TEST_USER_PASSWORD=prodpass123
 ```
 
-### Project Detection
+### Project Structure
 
-The package automatically detects which project you're in based on:
-1. `package.json` name field
-2. Directory name
-3. Project-specific files
+Organize your tests by project:
 
-## 📝 Writing Tests
+```
+tests/
+├── project-1/
+│   ├── cypress.config.js
+│   └── e2e/
+│       ├── auth.cy.js
+│       ├── dashboard.cy.js
+│       └── settings.cy.js
+├── project-2/
+│   ├── cypress.config.js
+│   └── e2e/
+│       └── smoke.cy.js
+└── shared/
+    ├── commands/
+    └── fixtures/
+```
 
-### Test Structure
+## Writing Tests
+
+### Basic Test Structure
 
 ```javascript
-describe('Feature Name', () => {
+describe('User Authentication', () => {
   beforeEach(() => {
     cy.visit('/')
   })
 
-  it('should do something', () => {
-    cy.get('button').click()
-    cy.url().should('include', '/success')
+  it('should login successfully', () => {
+    cy.get('[data-cy=email]').type('user@example.com')
+    cy.get('[data-cy=password]').type('password123')
+    cy.get('[data-cy=submit]').click()
+    cy.url().should('include', '/dashboard')
   })
 })
 ```
 
-### Using Shared Commands
+### Using Custom Commands
 
 ```javascript
-// Authentication
+// Login command
 cy.login('user@example.com', 'password')
-cy.logout()
 
-// Forms
-cy.fillContactForm({
+// API testing
+cy.apiRequest('GET', '/users')
+  .should((response) => {
+    expect(response.status).to.eq(200)
+  })
+
+// Form helpers
+cy.fillForm({
   name: 'John Doe',
   email: 'john@example.com',
-  phone: '0123456789',
   message: 'Test message'
 })
-
-// Validation
-cy.validateFormErrors(['email', 'phone'])
 ```
 
-## 🎯 Available Commands
-
-### CLI Commands
+## CLI Options
 
 ```bash
-# Run tests
-qa-test                          # Auto-detect project
-qa-test --project astra         # Specific project
-qa-test --env staging           # Specific environment
-qa-test --spec "**/*forms*"    # Specific test files
-qa-test --headed                # Visible browser
-qa-test --browser firefox       # Different browser
-qa-test --debug                 # Debug mode
+qa-test [options]
 
-# NPM Scripts (in your project)
-npm run qa:test                 # Run tests
-npm run qa:test:local           # Local environment
-npm run qa:test:staging         # Staging environment
-npm run qa:test:headed          # Headed mode
-npm run qa:update               # Update package
+Options:
+  -p, --project <name>     Project name to test
+  -e, --env <environment>  Environment (local|staging|production) [default: "local"]
+  -s, --spec <pattern>     Specific test files to run
+  -b, --browser <browser>  Browser to use (chrome|firefox|edge) [default: "chrome"]
+  --headed                 Run tests in headed mode
+  --debug                  Enable debug mode
+  --no-exit                Keep Cypress open after tests
+  -h, --help              Display help
 ```
 
-## 🔗 Git Hooks
+## Git Hooks
 
-The package automatically installs a pre-commit hook that:
-1. Fetches latest test scripts
-2. Runs tests for your project
-3. Blocks commit if tests fail
+The package automatically sets up pre-commit hooks during installation. To skip hooks temporarily:
 
-To skip hooks temporarily:
 ```bash
 git commit --no-verify -m "Emergency fix"
 ```
 
-## 📊 Test Reports
+To disable hooks:
 
-Test results are saved in:
-- Screenshots: `cypress/screenshots/`
-- Videos: `cypress/videos/`
-- Reports: `reports/`
-
-## 🏗️ Project Support
-
-Currently supported projects:
-- ✅ astra
-- ✅ amaron
-- ✅ akademi
-- ✅ b2b-web
-- ✅ b2c-web
-- ✅ motor-maniac
-- 🚧 ticketing (coming soon)
-
-## 🐛 Troubleshooting
-
-### Tests fail locally but pass in CI
-- Check environment variables
-- Ensure correct base URL
-- Check browser version
-
-### Package not found
 ```bash
-npm install @am-bateriku/qa-scripts --save-dev
+rm .git/hooks/pre-commit
 ```
 
-### Permission denied for hooks
-```bash
-chmod +x .git/hooks/pre-commit
+## Test Reports
+
+Test results are automatically saved:
+
+- **Screenshots**: `cypress/screenshots/` (on failures)
+- **Videos**: `cypress/videos/`
+- **JSON Reports**: `reports/results.json`
+
+## API
+
+### Programmatic Usage
+
+```javascript
+const { runTests } = require('qa-scripts');
+
+// Run tests programmatically
+runTests({
+  project: 'myapp',
+  env: 'staging',
+  headed: false,
+  spec: '**/*smoke*'
+}).then(results => {
+  console.log('Tests completed:', results);
+});
 ```
 
-### Tests timeout
-- Increase timeout in `.env` file
-- Check if application is running
-- Check network connectivity
+### Project Detection
 
-## 🤝 Contributing
+```javascript
+const { detectProject } = require('qa-scripts');
 
-### For QA Team
+const project = detectProject();
+console.log('Detected project:', project);
+```
 
-1. Create feature branch
-2. Write/update tests
-3. Test locally
-4. Create pull request
-5. After review, publish new version
+## Contributing
 
-### For Developers
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-Report issues or suggest improvements:
-- Create issue in qa-scripts repository
-- Include error messages and environment details
+## License
 
-## 📚 Documentation
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-- [TESTER_GUIDE.md](docs/TESTER_GUIDE.md) - Detailed guide for QA team
-- [DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) - Integration guide for developers
-- [CI_CD_SETUP.md](docs/CI_CD_SETUP.md) - CI/CD configuration
+## Support
 
-## 📄 License
+- 📧 [Email Support](mailto:support@example.com)
+- 🐛 [Report Issues](https://github.com/evoaiman/qa-scripts/issues)
+- 💬 [Discussions](https://github.com/evoaiman/qa-scripts/discussions)
 
-Private - Bateriku Internal Use Only
+## Links
 
-## 👥 Support
-
-- QA Team: qa@bateriku.com
-- Dev Team: dev@bateriku.com
-- Slack: #qa-automation
+- [GitHub Repository](https://github.com/evoaiman/qa-scripts)
+- [NPM Package](https://www.npmjs.com/package/qa-scripts)
+- [Documentation](https://github.com/evoaiman/qa-scripts/wiki)
 
 ---
 
-Made with ❤️ by Bateriku QA Team
+Made with ❤️ by the QA community

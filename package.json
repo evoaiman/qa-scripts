@@ -1,7 +1,7 @@
 {
-  "name": "@evoaiman/qa-scripts",
+  "name": "qa-scripts",
   "version": "1.0.0",
-  "description": "Centralized QA test scripts for Bateriku projects",
+  "description": "Centralized QA test automation framework for web applications",
   "main": "index.js",
   "bin": {
     "qa-test": "bin/qa-test"
@@ -22,8 +22,8 @@
     "qa:test:production": "qa-test --env production",
     "qa:test:headed": "qa-test --headed",
     "qa:test:debug": "qa-test --headed --debug",
-    "qa:update": "npm update @am-bateriku/qa-scripts",
-    "qa:update:latest": "npm install @am-bateriku/qa-scripts@latest"
+    "qa:update": "npm update qa-scripts",
+    "qa:update:latest": "npm install qa-scripts@latest"
   },
   "dependencies": {
     "cypress": "^14.5.4",
@@ -33,8 +33,7 @@
     "chalk": "^4.1.2"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com",
-    "access": "restricted"
+    "access": "public"
   },
   "files": [
     "bin/",
@@ -51,14 +50,20 @@
     "testing",
     "cypress",
     "e2e",
-    "bateriku"
+    "automation",
+    "test-automation",
+    "end-to-end"
   ],
-  "author": "Bateriku QA Team",
-  "license": "PRIVATE",
+  "author": "evoaiman",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bateriku/qa-scripts.git"
+    "url": "git+https://github.com/evoaiman/qa-scripts.git"
   },
+  "bugs": {
+    "url": "https://github.com/evoaiman/qa-scripts/issues"
+  },
+  "homepage": "https://github.com/evoaiman/qa-scripts#readme",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
