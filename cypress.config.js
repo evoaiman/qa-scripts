@@ -17,6 +17,7 @@ const project = process.env.PROJECT || process.env.npm_config_project || 'all'
 
 export default defineConfig({
   e2e: {
+    experimentalStudio: true,
     baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     specPattern: project === 'all' 
       ? 'cypress/e2e/**/*.cy.{js,jsx,ts,tsx}'
