@@ -1,0 +1,75 @@
+#!/usr/bin/env node
+
+const { program } = require('commander');
+const path = require('path');
+const { runTests } = require('../lib/runner');
+const { detectProject } = require('../lib/project-detector');
+const { loadConfig } = require('../lib/config-loader');
+const chalk = require('chalk');
+
+// CLI configuration
+program
+  .name('qa-test')
+  .description('Run QA tests for Bateriku projects')
+  .version(require('../package.json').version)
+  .option('-p, --project <name>', 'Project name to test (auto-detected if not specified)')
+  .option('-e, --env <environment>', 'Environment (local/staging/production)', 'local')
+  .option('-s, --spec <pattern>', 'Specific test file or pattern to run')
+  .option('--headed', 'Run tests in headed mode (visible browser)')
+  .option('-b, --browser <name>', 'Browser to use (chrome/firefox/edge)', 'chrome')
+  .option('--no-exit', 'Keep Cypress open after tests complete')
+  .option('--update-snapshots', 'Update visual regression snapshots')
+  .option('--parallel', 'Run tests in parallel')
+  .option('--record', 'Record test results to Cypress Dashboard')
+  .option('--debug', 'Enable debug mode with verbose output')
+  .parse(process.argv);
+
+const options = program.opts();
+
+// Auto-detect project if not specified
+if (!options.project) {
+  const detectedProject = detectProject();
+  if (detectedProject) {
+    console.log(chalk.blue(`ℹ️  Auto-detected project: ${chalk.bold(detectedProject)}`));
+    options.project = detectedProject;
+  } else {
+    console.error(chalk.red('❌ Could not detect project. Please specify with --project flag'));
+    process.exit(1);
+  }
+}
+
+// Load environment configuration
+console.log(chalk.blue(`🔧 Loading ${options.env} environment configuration...`));
+const config = loadConfig(options.env);
+
+// Display test configuration
+console.log(chalk.cyan('\n📋 Test Configuration:'));
+console.log(chalk.gray(`   Project: ${options.project}`));
+console.log(chalk.gray(`   Environment: ${options.env}`));
+console.log(chalk.gray(`   Browser: ${options.browser}`));
+console.log(chalk.gray(`   Mode: ${options.headed ? 'Headed' : 'Headless'}`));
+if (options.spec) {
+  console.log(chalk.gray(`   Spec: ${options.spec}`));
+}
+
+// Run tests
+console.log(chalk.green('\n🧪 Starting QA tests...\n'));
+
+runTests(options, config)
+  .then((results) => {
+    if (results.totalFailed === 0) {
+      console.log(chalk.green.bold(`\n✅ All tests passed! (${results.totalPassed}/${results.totalTests})`));
+      process.exit(0);
+    } else {
+      console.log(chalk.red.bold(`\n❌ ${results.totalFailed} tests failed (${results.totalPassed}/${results.totalTests} passed)`));
+      process.exit(1);
+    }
+  })
+  .catch((error) => {
+    console.error(chalk.red('\n❌ Test execution failed:'));
+    console.error(chalk.red(error.message));
+    if (options.debug) {
+      console.error(error.stack);
+    }
+    process.exit(1);
+  });

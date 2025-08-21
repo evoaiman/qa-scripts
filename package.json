@@ -1,0 +1,58 @@
+{
+  "name": "@am-bateriku/qa-scripts",
+  "version": "1.0.0",
+  "description": "Centralized QA test scripts for Bateriku projects",
+  "main": "index.js",
+  "bin": {
+    "qa-test": "./bin/qa-test"
+  },
+  "scripts": {
+    "postinstall": "node hooks/install.js",
+    "test": "node lib/runner.js",
+    "test:astra": "cypress run --config-file tests/astra/cypress.config.js",
+    "test:amaron": "cypress run --config-file tests/amaron/cypress.config.js",
+    "test:akademi": "cypress run --config-file tests/akademi/cypress.config.js",
+    "test:b2b-web": "cypress run --config-file tests/b2b-web/cypress.config.js",
+    "test:b2c-web": "cypress run --config-file tests/b2c-web/cypress.config.js",
+    "test:motor-maniac": "cypress run --config-file tests/motor-maniac/cypress.config.js",
+    "publish-package": "npm publish --registry=https://npm.pkg.github.com"
+  },
+  "dependencies": {
+    "cypress": "^14.5.4",
+    "dotenv": "^16.0.0",
+    "cross-env": "^7.0.3",
+    "commander": "^11.0.0",
+    "chalk": "^4.1.2"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "tests/",
+    "shared/",
+    "configs/",
+    "hooks/",
+    "index.js",
+    ".env.example"
+  ],
+  "keywords": [
+    "qa",
+    "testing",
+    "cypress",
+    "e2e",
+    "bateriku"
+  ],
+  "author": "Bateriku QA Team",
+  "license": "PRIVATE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bateriku/qa-scripts.git"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
